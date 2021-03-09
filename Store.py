@@ -1,4 +1,8 @@
 from Department import Department
+from Product import Product
+from Clothing import Clothing
+from Tool import Tool
+from Electronic import Electronic
 
 class Store:
     # attributes
@@ -26,9 +30,29 @@ class Store:
     def __repr__(self):
         return f'Store("{self.name}", {self.departments})'
 
+# lets make some products
+
+# clothes
+tshirt = Clothing("Long Sleve T-Shirt", 20, "XXL", "Blue")
+red_shoes = Clothing("Red Running Shoe", 34, "12", "Red")
+
+# tools
+hammer = Tool("Ball Pane Hammer", 5, "Hammer")
+screw_driver = Tool("Philips Head Screw Driver", 3, "Screw Driver")
+
+# electronics
+televisions = Electronic("50 inch Wide Screen LCD", 400, "50w")
+tablet = Electronic("Android Tablet", 50, "8w")
+
+
+
+# lets create some Departments
+clothes_dept = Department("Clothes", [tshirt, red_shoes])
+tools_dept = Department("Tools", [hammer, screw_driver])
+electronics_dept = Department("Electronics", [televisions, tablet])
 
 # instance of the Store class
-my_store = Store("Bobs Emporium", [Department("Clothes"), Department("Tools"), Department("Electronics"), Department("Bobs Specials")])
+my_store = Store("Bobs Emporium", [clothes_dept, tools_dept, electronics_dept])
 
 # print(repr(my_store))
 # make a variable to hold the users choice?

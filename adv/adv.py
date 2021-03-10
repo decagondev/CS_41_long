@@ -36,7 +36,7 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-# make some rooms light
+# make some rooms lit
 room['outside'].is_lit = True
 room['foyer'].is_lit = True
 

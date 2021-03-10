@@ -49,3 +49,7 @@ class Weapon(Item):
             print(f"You lost {self.power} Power!")
             self.picked_up = False
 
+class LightSource(Item):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.lightsource = True

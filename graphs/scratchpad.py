@@ -92,6 +92,32 @@ def dft(row, col, matrix, visited):
     return visited
 
 
+def bft(row, col, matrix, visited):
+    # create an empty stack
+    s = Queue()
+
+    # push the starting node on to the stack
+    s.enqueue((row, col))
+    
+    # while the stack is not empty
+    while s.size() > 0:
+        # pop the first node from the top of the stack
+        node = s.dequeue()
+        row = node[0]
+        col = node[1]
+
+        # if the node has not been visited before
+        if not visited[row][col]:
+            # mark the node as visited
+            visited[row][col] = True
+            # push each (1) neighbor of the node on to the stack
+            for neighbor in get_neighbors(row, col, matrix):
+                s.enqueue(neighbor)
+
+    # return the visited matrix back to the caller
+    return visited
+
+
 def get_neighbors(row, col, matrix):
     # create an empty list to store neighbors
     neighbors = []

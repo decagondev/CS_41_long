@@ -1,3 +1,32 @@
+import sys
+
+loaded_file_name = ""
+
+if len(sys.argv) < 2:
+    print("Usage: fileio.py <filename>")
+else:
+    loaded_file_name = sys.argv[1]
+
+def load_prog(file_name):
+    program = []
+    try:
+        with open(file_name) as f:
+                for line in f:
+                    num_string = line.split("#")[0].strip()
+
+                    if num_string == '':
+                        continue
+
+                    int_of_bin = int(num_string, 2)
+
+                    program.append(int_of_bin)
+
+
+    except FileNotFoundError:
+        print("I can not find the file!!!!!!!!")
+
+    return program
+
 # class A:
 #     def __init__(self):
 #         pass
@@ -23,26 +52,14 @@ LDI = 0b10000010
 PRN = 0b01000111
 
 # Memory
-# ram = [0] * 255
-
-ram = [
-    PRINT_NAME,
-    PRINT_NAME,
-    PRINT_NUM,
-    123,
-    LDI,
-    0,
-    100,
-    LDI,
-    1,
-    20,
-    ADD,
-    0,
-    1,
-    PRINT_REG,
-    0,
-    HALT,
-]
+ram = [0] * 255
+prog = load_prog(loaded_file_name)
+print(prog)
+# load a program from
+address = 0
+for instruction in prog:
+        ram[address] = instruction
+        address += 1
 
 # program counter
 pc = 0
@@ -118,5 +135,5 @@ while running:
 
     # decode
     else:
-        print(f"Unknown instruction {inst}")
+        print("Unknown instruction")
         running = False

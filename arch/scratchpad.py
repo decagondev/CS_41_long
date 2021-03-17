@@ -50,11 +50,13 @@ ADD = 0b11101100
 
 LDI = 0b10000010
 PRN = 0b01000111
+PUSH = 0b01000101
+POP = 0b01000110
 
 # Memory
 ram = [0] * 255
 prog = load_prog(loaded_file_name)
-print(prog)
+# print(prog)
 # load a program from
 address = 0
 for instruction in prog:
@@ -67,6 +69,15 @@ pc = 0
 # r0 - r7
 registers = [0] * 8
 
+# TODO: add stack pointer to register as per ls8 specs
+
+# stack pointer is register 7
+SP = 7
+
+# and set the top of the stack by setting registers at the index of SP to the value of 0xf4
+registers[SP] = 0xf4
+
+
 # running loop
 running = True
 
@@ -74,8 +85,9 @@ while running:
     # fetch
     inst = ram[pc]
     opa = ram[pc + 1]
-    opb = ram[pc + 2]
 
+    opb = ram[pc + 2]
+    # print(f"OPA: {opa}, OPB: {opb}")
     # decode
     if inst == PRINT_NAME:
         # execute
@@ -101,6 +113,7 @@ while running:
 
         # decode
     elif inst == LDI:
+        # print("LDI")
         # execute
         # get the reg index.
         reg_index = opa
@@ -131,7 +144,32 @@ while running:
         registers[reg_index1] += registers[reg_index2]
         pc += 3
 
+    # TODO: Implement PUSH operation.
+    elif inst == PUSH:
+        # print("PUSH")
 
+        # Decrement the Stack Pointer
+        registers[SP] -= 1
+
+        # Copy the value at the given register to the address in memory pointed to by the Stack Pointer.
+        ram[registers[SP]] = registers[opa]
+
+        pc += 2
+
+
+
+
+    # TODO: Implement POP operation.
+    elif inst == POP:
+
+        # Copy the value at address in memory pointed to by the Stack Pointer to the given register.
+        registers[opa] = ram[registers[SP]]
+
+        # Icrement the Stack Pointer
+        registers[SP] += 1
+
+        # increment the PC.
+        pc += 2
 
     # decode
     else:

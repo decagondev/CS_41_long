@@ -5,7 +5,11 @@ import sys
 LDI = 0b10000010
 PRN = 0b01000111
 HLT = 0b00000001
+POP  = 0b01000110
+PUSH = 0b01000101
+MUL  = 0b10100010
 
+SP = 7
 
 class CPU:
     """Main CPU class."""
@@ -17,27 +21,47 @@ class CPU:
         self.ram = [0] * 256
 
         self.running = False
+    
 
-    def load(self):
+    # Helper Methods
+    def ram_read(self, mar):
+        return self.ram[mar]
+
+    def ram_write(self, mar, mdr):
+        self.ram[mar] = mdr
+
+    def push_val(self, val):
+        self.reg[SP] -= 1
+        self.ram_write(val, self.reg[7])
+        
+    def pop_val(self):
+        val = self.ram_read(self.reg[7])
+        self.reg[SP] += 1
+
+        return val
+
+    def load(self, filename):
         """Load a program into memory."""
 
         address = 0
+        with open(filename) as fp:
+            for line in fp:
 
-        # For now, we've just hardcoded a program:
+                # split the line on the hash sign
+                comment_split = line.split("#")
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+                # strip the whitespace on element zero (the instruction)
+                num = comment_split[0].strip()
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+                if num == '':  # ignore blanks
+                    continue
+
+                # turn the number string in to an integer
+                val = int(num, 2)
+                print(val)
+
+                self.ram_write(address, val)
+                address += 1
 
 
     def alu(self, op, reg_a, reg_b):
@@ -45,7 +69,12 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "DIV":
+            self.reg[reg_a] /= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -99,6 +128,15 @@ class CPU:
                 num = opb
                 # put the number in the registers list at the index of reg_index
                 self.reg[reg_index] = num
+
+            elif inst == PUSH:
+                # print("PUSH")
+
+                # Decrement the Stack Pointer
+                self.reg[SP] -= 1
+
+                # Copy the value at the given register to the address in memory pointed to by the Stack Pointer.
+                self.ram[self.reg[SP]] = self.reg[opa]
                 
 
             # decode

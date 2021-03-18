@@ -53,6 +53,9 @@ PRN = 0b01000111
 PUSH = 0b01000101
 POP = 0b01000110
 
+CALL = 0b01010000
+RET = 0b00010001
+
 # Memory
 ram = [0] * 255
 prog = load_prog(loaded_file_name)
@@ -128,6 +131,29 @@ while running:
         # execute
         print(opa)
         pc += 2
+
+    # decode
+    elif inst == RET:
+        # execute
+        # copy the value in memory pointed to by the stack pointer in to the pc
+        pc = ram[registers[SP]]
+        # Icrement the Stack Pointer
+        registers[SP] += 1
+
+
+    # decode
+    elif inst == CALL:
+        # execute
+
+        # Get the address of the next instruction by adding 2 to the current pc
+        address_of_next_instruction = pc + 2
+        # Push the address of next instruction on to the stack for use in the RET instruction
+        registers[SP] -= 1
+        ram[registers[SP]] = address_of_next_instruction
+
+        reg_index = opa
+        addr = registers[reg_index]
+        pc = addr
 
     # decode
     elif inst == PRINT_REG:
